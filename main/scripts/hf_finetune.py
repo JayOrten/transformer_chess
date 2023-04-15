@@ -1,4 +1,5 @@
 from datasets import load_dataset
+import transformers
 from transformers import AutoTokenizer
 from transformers import DataCollatorForLanguageModeling
 from transformers import TrainingArguments, Trainer
@@ -7,6 +8,9 @@ from transformers import GPT2LMHeadModel
 from huggingface_hub import login
 
 def main():
+
+    transformers.logging.set_verbosity_info()
+
     # Login to hf? 
     login()
 
@@ -17,7 +21,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer") 
 
     # Tokenize all of the data, this will take a bit unless its cached.
-    context_length = 256
+    context_length = 5
 
     def tokenize(element):
         outputs = tokenizer(
@@ -66,6 +70,8 @@ def main():
         train_dataset=split_dataset["train"],
         eval_dataset=split_dataset["test"]
     )
+
+    print('BEGINNING TRAINING')
 
     trainer.train()
 
