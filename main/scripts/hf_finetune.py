@@ -6,8 +6,10 @@ from transformers import TrainingArguments, Trainer
 from huggingface_hub import notebook_login
 from transformers import GPT2LMHeadModel
 from huggingface_hub import login
+import os
 
 def main():
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     transformers.logging.set_verbosity_info()
 
