@@ -4,17 +4,17 @@ from transformers import DataCollatorForLanguageModeling
 from transformers import TrainingArguments
 from transformers import GPT2LMHeadModel, AutoConfig
 from transformers import Trainer, TrainingArguments
-from huggingface_hub import notebook_login
+from huggingface_hub import login
 
 def main():
     # Login to hf
-    notebook_login()
+    login()
 
     # Load data
     raw_dataset = load_dataset("royal42/lichess_elite_games")
 
     # Load pretrained tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("../data/tokenizations/chess-tokenizer/")
+    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer")
 
     # Tokenize all of the data, this will take a bit unless its cached.
     context_length = 256

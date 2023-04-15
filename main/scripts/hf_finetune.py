@@ -4,16 +4,17 @@ from transformers import DataCollatorForLanguageModeling
 from transformers import TrainingArguments, Trainer
 from huggingface_hub import notebook_login
 from transformers import GPT2LMHeadModel
+from huggingface_hub import login
 
 def main():
-    # Login to hf
-    notebook_login()
+    # Login to hf? 
+    login()
 
     # Load data
     raw_dataset = load_dataset("royal42/lichess_elite_games")
 
     # Load pretrained tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("../data/tokenizations/chess-tokenizer/") 
+    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer") 
 
     # Tokenize all of the data, this will take a bit unless its cached.
     context_length = 256
@@ -47,7 +48,7 @@ def main():
     # Setup trainer classes
     training_args = TrainingArguments(
         output_dir="./gpt2chess_finetune",          # output directory
-        num_train_epochs=10,              # total number of training epochs
+        num_train_epochs=1,              # total number of training epochs
         per_device_train_batch_size=32,  # batch size per device during training
         per_device_eval_batch_size=32,   # batch size for evaluation
         evaluation_strategy="steps",
@@ -72,5 +73,5 @@ def main():
 
     trainer.push_to_hub()
 
-if __name__ == " __main__":
+if __name__ == "__main__":
     main()
