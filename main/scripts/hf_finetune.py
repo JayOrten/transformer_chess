@@ -11,8 +11,6 @@ import os
 def main():
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-    transformers.logging.set_verbosity_info()
-
     # Login to hf? 
     login()
 
@@ -20,7 +18,7 @@ def main():
     raw_dataset = load_dataset("royal42/lichess_elite_games")
 
     # Load pretrained tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer") 
+    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=False) 
 
     # Tokenize all of the data, this will take a bit unless its cached.
     context_length = 5
@@ -58,6 +56,7 @@ def main():
         per_device_train_batch_size=32,  # batch size per device during training
         per_device_eval_batch_size=32,   # batch size for evaluation
         evaluation_strategy="steps",
+        save_total_limit=5,
         warmup_steps=500,                # number of warmup steps for learning rate scheduler
         weight_decay=0.01,               # strength of weight decay
         fp16=True,
@@ -72,8 +71,6 @@ def main():
         train_dataset=split_dataset["train"],
         eval_dataset=split_dataset["test"]
     )
-
-    print('BEGINNING TRAINING')
 
     trainer.train()
 
