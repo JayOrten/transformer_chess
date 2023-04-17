@@ -1,4 +1,4 @@
-from datasets import load_dataset
+from datasets import load_from_disk
 import transformers
 from transformers import AutoTokenizer
 from transformers import DataCollatorForLanguageModeling
@@ -9,32 +9,14 @@ from huggingface_hub import login
 import os
 
 def main():
-    os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     # Login to hf? 
     login()
 
-    # Load data
-    raw_dataset = load_dataset("royal42/lichess_elite_games")
+    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=True) 
 
-    # Load pretrained tokenizer
-    tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=False) 
-
-    # Tokenize all of the data, this will take a bit unless its cached.
-    context_length = 5
-
-    def tokenize(element):
-        outputs = tokenizer(
-            element["text"],
-            max_length=context_length,
-            truncation=True
-        )
-        return outputs
-
-
-    tokenized_datasets = raw_dataset.map(
-        tokenize, batched=True, remove_columns=raw_dataset["train"].column_names
-    )
+    # Load tokenized data
+    tokenized_datasets = load_from_disk("./data/tokenized_files")
     
     # Create collator
     tokenizer.pad_token = tokenizer.eos_token
