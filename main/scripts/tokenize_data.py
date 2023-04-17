@@ -8,7 +8,7 @@ raw_dataset = load_dataset("royal42/lichess_elite_games")
 tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=True) 
 
 # Tokenize all of the data, this will take a bit unless its cached.
-context_length = 5
+context_length = 256
 
 def tokenize(element):
     outputs = tokenizer(
@@ -23,4 +23,4 @@ tokenized_datasets = raw_dataset.map(
     tokenize, batched=True, remove_columns=raw_dataset["train"].column_names
 )
 
-tokenized_datasets.save_to_disk('./data/tokenized_files')
+load_dataset.save_to_disk('./data/tokenized_files')

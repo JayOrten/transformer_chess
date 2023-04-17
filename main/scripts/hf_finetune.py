@@ -3,13 +3,11 @@ import transformers
 from transformers import AutoTokenizer
 from transformers import DataCollatorForLanguageModeling
 from transformers import TrainingArguments, Trainer
-from huggingface_hub import notebook_login
 from transformers import GPT2LMHeadModel
 from huggingface_hub import login
 import os
 
 def main():
-
     # Login to hf? 
     login()
 
@@ -34,10 +32,11 @@ def main():
     # Setup trainer classes
     training_args = TrainingArguments(
         output_dir="./gpt2chess_finetune",          # output directory
-        num_train_epochs=1,              # total number of training epochs
+        num_train_epochs=3,              # total number of training epochs
         per_device_train_batch_size=32,  # batch size per device during training
         per_device_eval_batch_size=32,   # batch size for evaluation
         evaluation_strategy="steps",
+        eval_steps=5000,
         save_total_limit=5,
         warmup_steps=500,                # number of warmup steps for learning rate scheduler
         weight_decay=0.01,               # strength of weight decay

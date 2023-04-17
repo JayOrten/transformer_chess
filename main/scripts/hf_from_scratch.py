@@ -1,4 +1,4 @@
-from datasets import load_dataset
+from datasets import load_from_disk
 from transformers import AutoTokenizer
 from transformers import DataCollatorForLanguageModeling
 from transformers import TrainingArguments
@@ -10,28 +10,13 @@ def main():
     # Login to hf
     login()
 
-    # Load data
-    raw_dataset = load_dataset("royal42/lichess_elite_games")
-
     # Load pretrained tokenizer
     tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer")
 
-    # Tokenize all of the data, this will take a bit unless its cached.
+    # Load tokenized data
+    tokenized_datasets = load_from_disk("./data/tokenized_files")
+
     context_length = 256
-
-    def tokenize(element):
-        outputs = tokenizer(
-            element["text"],
-            max_length=context_length,
-            truncation=True
-        )
-
-        return outputs
-
-
-    tokenized_datasets = raw_dataset.map(
-        tokenize, batched=True, remove_columns=raw_dataset["train"].column_names
-    )
 
     # Create collator
     tokenizer.pad_token = tokenizer.eos_token
@@ -62,12 +47,13 @@ def main():
         eval_steps=5_000,
         logging_steps=5_000,
         gradient_accumulation_steps=8,
-        num_train_epochs=10,
+        num_train_epochs=5,
         weight_decay=0.1,
         warmup_steps=1_000,
         lr_scheduler_type="cosine",
         learning_rate=5e-4,
         save_steps=5_000,
+        save_total_limit=5,
         fp16=True,
         push_to_hub=True
     )
