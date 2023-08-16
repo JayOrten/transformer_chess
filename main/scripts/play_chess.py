@@ -4,7 +4,7 @@ from transformers import AutoTokenizer
 import chess.svg
 
 def load_model():
-    torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.device("cpu") # "cuda" if torch.cuda.is_available() else 
     device = torch.cuda.current_device()
 
     tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=True)
@@ -23,6 +23,21 @@ def main():
 
     current_sequence = []
     while not board.is_game_over():
+        # ------------- this is experimentation
+        current_moves = [x for x in board.move_stack]
+        move_sequence_san = []
+        new_board = chess.Board()
+        for move in current_moves:
+            san = new_board.san(move)
+            move_sequence_san.append(san)
+            new_board.push_san(san)
+
+        print(move_sequence_san)
+
+        #print([board.parse_uci(x.uci()) for x in board.move_stack])
+        #rint([board.san(board.parse_uci(x.uci())) for x in board.move_stack])
+
+        # -------------
         # Your move
         while True:
             print('Your move: ')

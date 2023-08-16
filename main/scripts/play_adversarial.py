@@ -8,13 +8,13 @@ import string
 import matplotlib.pyplot as plt
 
 def load_model():
-    torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.device("cpu") # "cuda" if torch.cuda.is_available() else 
     device = torch.cuda.current_device()
 
     tokenizer = AutoTokenizer.from_pretrained("royal42/chess_tokenizer", use_fast=True)
     
     pipe = pipeline(
-    "text-generation", model="royal42/test2", tokenizer=tokenizer, device=device
+    "text-generation", model="royal42/gpt2chess_scratch", tokenizer=tokenizer, device=device
     )
 
     return pipe
